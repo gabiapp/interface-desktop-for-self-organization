@@ -1,22 +1,30 @@
-from PySide6.QtWidgets import QMainWindow, QApplication, QFrame, QGridLayout, QVBoxLayout, QHBoxLayout, QPushButton
-from PyQt6 import QtWidgets
+from PySide6.QtWidgets import (
+    QMainWindow, QApplication, QFrame, QGridLayout,
+    QVBoxLayout, QHBoxLayout, QPushButton,
+    QLineEdit, QStackedWidget, QSpacerItem,
+    QSizePolicy, QWidget,QLabel,
+    QTextEdit, QFormLayout
+)
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Interface pra Gabriela se localizar")
+        self.setMouseTracking(True) 
 
         # Criação das estruturas básicas
 
         self.widget_principal = QFrame() # Widget principal onde todas as estruturas serão alocadas
+        self.widget_principal.setStyleSheet("QFrame { border: 1px solid white; }")
         self.layout_principal = QGridLayout() # Layout do widget principal
         self.widget_principal.setLayout(self.layout_principal) # Setando Layout para o Widget principal
+        self.widget_principal.setStyleSheet("background-color: rgb(220,220,220); ")
 
         # Métricas para algumas colunas do QGridLayout
-        #self.layout_principal.setColumnStretch(0, 0)  # Evita o alongamento da coluna 0
-        #self.layout_principal.setColumnStretch(1, 0)  # Evita o alongamento da coluna 1
-        #self.layout_principal.setColumnMinimumWidth(0, 100)
+        self.layout_principal.setContentsMargins(0, 0, 0, 0)
+        self.layout_principal.setSpacing(0)
+        self.layout_principal.setColumnStretch(0, 0)  # Evita o alongamento da coluna 0
 
         self.setCentralWidget(self.widget_principal) # Tornando o widget principal como widget central da QMainWindow
 
@@ -28,8 +36,11 @@ class MainWindow(QMainWindow):
         # Cada novo widget secundário é adicionado ao QGridLayout que é o layout principal
         # Os Widgets terciários (botões, por exemplo) são adicionados ao layout do widget secundário
 
-        self.menu_lateral = QFrame() # QFrame para o menu lateral que possui botões estratégicos
+        # QFrame para o menu lateral que possui botões estratégicos
+        self.menu_lateral = QFrame() 
         self.menu_lateral.setFrameShape(QFrame.Box)
+        self.menu_lateral.setStyleSheet("QFrame { border: 1px solid white; border-top: none; border-right: none; }")
+        self.menu_lateral.setFixedWidth(50)
 
         self.layout_menu_lateral = QVBoxLayout()
         self.menu_lateral.setLayout(self.layout_menu_lateral)
@@ -124,7 +135,7 @@ class MainWindow(QMainWindow):
 
         self.widget_atividades = QWidget() # Widget onde vou insirir frames para editar textos, criar to-do lists e adicionar conteúdos interessantes
         #self.widget_atividades.setStyleSheet("border: none; ")
-        self.layout_widget_atividades = QHBoxLayout()
+        self.layout_widget_atividades = QGridLayout()
         self.widget_atividades.setLayout(self.layout_widget_atividades)
         self.stacked_area_trabalho.insertWidget(0, self.widget_atividades)
 
@@ -132,7 +143,7 @@ class MainWindow(QMainWindow):
         self.frame_conteudo.setFrameShape(QFrame.Box)
         self.layout_frame_conteudo = QVBoxLayout()
         self.frame_conteudo.setLayout(self.layout_frame_conteudo)
-        self.layout_widget_atividades.addWidget(self.frame_conteudo)
+        self.layout_widget_atividades.addWidget(self.frame_conteudo, 0, 0, 1, 3)
 
         self.label_conteudo = QLabel("Viver é a coisa mais rara do mundo. A maioria das pessoas apenas existe. - Oscar Wilde")
         self.layout_frame_conteudo.addWidget(self.label_conteudo)
@@ -140,7 +151,7 @@ class MainWindow(QMainWindow):
         self.frame_notes = QFrame()
         self.layout_frame_notes = QVBoxLayout()
         self.frame_notes.setLayout(self.layout_frame_notes)
-        self.layout_widget_atividades.addWidget(self.frame_notes)
+        self.layout_widget_atividades.addWidget(self.frame_notes, 1, 0, 2, 2)
 
         self.create_notes = QTextEdit()
         self.create_notes.setPlaceholderText("Digite aqui o que precisa")
@@ -149,7 +160,7 @@ class MainWindow(QMainWindow):
         self.frame_checklist = QFrame()
         self.layout_frame_checklist = QVBoxLayout()
         self.frame_checklist.setLayout(self.layout_frame_checklist)
-        self.layout_widget_atividades.addWidget(self.frame_checklist)
+        self.layout_widget_atividades.addWidget(self.frame_checklist, 1, 2, 2, 1)
         
         self.frame_to_do = QFrame()
         self.form_to_do = QFormLayout()
@@ -157,8 +168,11 @@ class MainWindow(QMainWindow):
         self.layout_frame_checklist.addWidget(self.frame_to_do)
 
         self.add_activity = QPushButton("+")
+        self.add_activity.setStyleSheet(self.button_style)
         self.exclude_activity = QPushButton("-")
+        self.exclude_activity.setStyleSheet(self.button_style)
         self.change_activity = QPushButton("Edit")
+        self.change_activity.setStyleSheet(self.button_style)
         
         self.layout_frame_checklist.addWidget(self.add_activity)
         self.layout_frame_checklist.addWidget(self.exclude_activity)
