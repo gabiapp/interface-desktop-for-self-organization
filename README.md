@@ -1,1 +1,1 @@
-# interface-desktop-for-self-organization
+# desktop-interface-for-self-organization
