@@ -6,6 +6,8 @@ from PySide6.QtWidgets import (
     QTextEdit, QFormLayout
 )
 
+from PySide6.QtGui import QIcon, Qt
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -66,16 +68,21 @@ class MainWindow(QMainWindow):
             }
         """
 
-        self.btn_add = QPushButton("A")
-        self.btn_add.setStyleSheet(self.button_style)
-        self.layout_menu_lateral.addWidget(self.btn_add)
+        self.btn_files = QPushButton()
+        self.icon_files = QIcon("images/pasta.png")
+        self.btn_files.setIcon(self.icon_files)
+        self.btn_files.setStyleSheet(self.button_style)
+        self.btn_files.setCursor(Qt.PointingHandCursor)
+        self.layout_menu_lateral.addWidget(self.btn_files)
 
         self.btn_list = QPushButton("B")
         self.btn_list.setStyleSheet(self.button_style)
+        self.btn_list.setCursor(Qt.PointingHandCursor)
         self.layout_menu_lateral.addWidget(self.btn_list)
         
         self.btn_stnc = QPushButton("C")
         self.btn_stnc.setStyleSheet(self.button_style)
+        self.btn_stnc.setCursor(Qt.PointingHandCursor)
         self.layout_menu_lateral.addWidget(self.btn_stnc)
 
         self.layout_menu_lateral.addSpacerItem(self.spacer_vertical)
@@ -92,8 +99,10 @@ class MainWindow(QMainWindow):
 
         # Botões para a barra superior
 
-        self.btn_Gabriela = QPushButton("Gabriela")
-        self.btn_Gabriela.setStyleSheet(self.button_style)
+        self.btn_Gabriela = QPushButton()
+        self.icon_gabiapp = QIcon('images/flores.png')
+        self.btn_Gabriela.setIcon(self.icon_gabiapp)
+        self.btn_Gabriela.setStyleSheet("border: none; ")
         self.layout_barra_nome.addSpacerItem(self.spacer_horizontal)
         self.layout_barra_nome.addWidget(self.btn_Gabriela)
         self.layout_barra_nome.addSpacerItem(self.spacer_horizontal)
@@ -113,6 +122,13 @@ class MainWindow(QMainWindow):
 
         self.caixa_pesquisa = QLineEdit()
         self.caixa_pesquisa.setPlaceholderText("Pesquisar")
+        self.caixa_pesquisa.setStyleSheet('''
+            QLineEdit {border-radius: 5px; color: black;
+            background-image: url(images/lupa.png);
+            background-position: left; background-repeat: no-repeat;
+            padding-left: 20px; background-color: white;}
+            QLineEdit::placeholder { text-align: center; }
+        ''')
         self.layout_pesquisa.addWidget(self.caixa_pesquisa)
 
         self.layout_pesquisa.addSpacerItem(self.spacer_horizontal)
@@ -140,7 +156,8 @@ class MainWindow(QMainWindow):
         self.stacked_area_trabalho.insertWidget(0, self.widget_atividades)
 
         self.frame_conteudo = QFrame()
-        self.frame_conteudo.setFrameShape(QFrame.Box)
+        self.frame_conteudo.setFixedHeight(50)
+        self.frame_conteudo.setStyleSheet("border: none; ")
         self.layout_frame_conteudo = QVBoxLayout()
         self.frame_conteudo.setLayout(self.layout_frame_conteudo)
         self.layout_widget_atividades.addWidget(self.frame_conteudo, 0, 0, 1, 3)
@@ -167,16 +184,35 @@ class MainWindow(QMainWindow):
         self.frame_to_do.setLayout(self.form_to_do)
         self.layout_frame_checklist.addWidget(self.frame_to_do)
 
-        self.add_activity = QPushButton("+")
-        self.add_activity.setStyleSheet(self.button_style)
-        self.exclude_activity = QPushButton("-")
-        self.exclude_activity.setStyleSheet(self.button_style)
-        self.change_activity = QPushButton("Edit")
-        self.change_activity.setStyleSheet(self.button_style)
-        
-        self.layout_frame_checklist.addWidget(self.add_activity)
-        self.layout_frame_checklist.addWidget(self.exclude_activity)
-        self.layout_frame_checklist.addWidget(self.change_activity)
+        self.frame_botoes = QFrame()
+        self.frame_botoes.setStyleSheet("border: none; ")
+        self.frame_botoes.setFixedHeight(80)
+        self.layout_frame_botoes = QHBoxLayout()
+        self.frame_botoes.setLayout(self.layout_frame_botoes)
+        self.layout_frame_checklist.addWidget(self.frame_botoes)
+
+        self.add_activity = QPushButton()
+        self.icon_add = QIcon("images/adicionar.png")
+        self.add_activity.setIcon(self.icon_add)
+        self.add_activity.setStyleSheet("border: none; ")
+        self.add_activity.setCursor(Qt.PointingHandCursor)
+
+        self.exclude_activity = QPushButton()
+        self.icon_exclude = QIcon("images/excluir.png")
+        self.exclude_activity.setIcon(self.icon_exclude)
+        self.exclude_activity.setStyleSheet("border: none; ")
+        self.exclude_activity.setCursor(Qt.PointingHandCursor)
+
+        self.change_activity = QPushButton()
+        self.icon_change = QIcon("images/editar.png")
+        self.change_activity.setIcon(self.icon_change)
+        self.change_activity.setStyleSheet("border: none; ")
+        self.change_activity.setCursor(Qt.PointingHandCursor)
+
+
+        self.layout_frame_botoes.addWidget(self.add_activity)
+        self.layout_frame_botoes.addWidget(self.exclude_activity)
+        self.layout_frame_botoes.addWidget(self.change_activity)
 
 
 
