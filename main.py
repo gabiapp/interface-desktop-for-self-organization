@@ -20,6 +20,10 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.widget_principal) # Tornando o widget principal como widget central da QMainWindow
 
+        # Criação de QSpacerItem para melhorar a disposição dos Widgets
+        self.spacer_vertical = QSpacerItem(0, 0, QSizePolicy.Ignored, QSizePolicy.Expanding)
+        self.spacer_horizontal = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Ignored)
+
         # Criação de estruturas para aportar elementos visuais
         # Cada novo widget secundário é adicionado ao QGridLayout que é o layout principal
         # Os Widgets terciários (botões, por exemplo) são adicionados ao layout do widget secundário
@@ -32,19 +36,44 @@ class MainWindow(QMainWindow):
 
         self.layout_principal.addWidget(self.menu_lateral, 1, 0, 3, 1)
 
-        # Botões para o menu lateral
+        # Botões para o menu lateral + estilo para botões
 
-        self.btn_add = QPushButton("Add")
+        self.button_style = """
+            QPushButton {
+                border: 1px solid black;
+                background-color: white;
+                padding-top: 3px;
+                padding-right: 5px;
+                padding-bottom: 3px;
+                padding-left: 5px;
+                border-radius: 5px;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(219,112,147);
+                color:white;
+            }
+        """
+
+        self.btn_add = QPushButton("A")
+        self.btn_add.setStyleSheet(self.button_style)
         self.layout_menu_lateral.addWidget(self.btn_add)
 
-        self.btn_list = QPushButton("To do")
+        self.btn_list = QPushButton("B")
+        self.btn_list.setStyleSheet(self.button_style)
         self.layout_menu_lateral.addWidget(self.btn_list)
         
-        self.btn_stnc = QPushButton("News")
+        self.btn_stnc = QPushButton("C")
+        self.btn_stnc.setStyleSheet(self.button_style)
         self.layout_menu_lateral.addWidget(self.btn_stnc)
 
-        self.barra_nome = QFrame() # Frame superior para colocar nome do app desktop
+        self.layout_menu_lateral.addSpacerItem(self.spacer_vertical)
+
+        # Frame superior para colocar nome do app desktop
+        self.barra_nome = QFrame() 
         self.barra_nome.setFrameShape(QFrame.Box)
+        self.barra_nome.setStyleSheet("QFrame { border: 1px solid white; }")
+        self.barra_nome.setFixedHeight(50)
         self.layout_barra_nome = QHBoxLayout()
         self.barra_nome.setLayout(self.layout_barra_nome)
 
@@ -52,13 +81,88 @@ class MainWindow(QMainWindow):
 
         # Botões para a barra superior
 
-        self.btn_Gabriela = QPushButton("Essa é a intertface que a Gabriela usa pra não se perder")
+        self.btn_Gabriela = QPushButton("Gabriela")
+        self.btn_Gabriela.setStyleSheet(self.button_style)
+        self.layout_barra_nome.addSpacerItem(self.spacer_horizontal)
         self.layout_barra_nome.addWidget(self.btn_Gabriela)
+        self.layout_barra_nome.addSpacerItem(self.spacer_horizontal)
 
-    
+        # Frame que será situado logo abaixo da barra superior para servir de cabeçalho para outros widgets e também possuirá uma barra de pesquisa
 
+        self.barra_pesquisa = QFrame()
+        self.barra_pesquisa.setFrameShape(QFrame.Box)
+        self.barra_pesquisa.setStyleSheet("QFrame { border: 1px solid white; border-top: none; border-bottom: none; }")
+        self.barra_pesquisa.setFixedHeight(50)
+        self.layout_pesquisa = QHBoxLayout()
+        self.barra_pesquisa.setLayout(self.layout_pesquisa)
 
+        self.layout_principal.addWidget(self.barra_pesquisa, 1, 1, 1, 2)
 
+        # Botões e caixa de pesquisa para a barra de pesquisa
+
+        self.caixa_pesquisa = QLineEdit()
+        self.caixa_pesquisa.setPlaceholderText("Pesquisar")
+        self.layout_pesquisa.addWidget(self.caixa_pesquisa)
+
+        self.layout_pesquisa.addSpacerItem(self.spacer_horizontal)
+        self.layout_pesquisa.addSpacerItem(self.spacer_horizontal)
+
+        # Widget para conter QStackedWidget que receberá outros widgets que se alternam no mesmo espaço
+
+        self.area_trabalho = QFrame()
+        self.area_trabalho.setFrameShape(QFrame.Box)
+        self.area_trabalho.setStyleSheet("QFrame { border: 1px solid white; }")
+        self.layout_area_trabalho = QVBoxLayout()
+        self.area_trabalho.setLayout(self.layout_area_trabalho)
+
+        # Criação de um QStackedWidget para poder inserir widgets que vão dividir o mesmo plano
+        self.stacked_area_trabalho = QStackedWidget()
+        self.stacked_area_trabalho.setStyleSheet("QStackedWidget { border: none; } ")
+        self.layout_area_trabalho.addWidget(self.stacked_area_trabalho)
+
+        self.layout_principal.addWidget(self.area_trabalho, 2, 1, 2, 2)
+
+        self.widget_atividades = QWidget() # Widget onde vou insirir frames para editar textos, criar to-do lists e adicionar conteúdos interessantes
+        #self.widget_atividades.setStyleSheet("border: none; ")
+        self.layout_widget_atividades = QHBoxLayout()
+        self.widget_atividades.setLayout(self.layout_widget_atividades)
+        self.stacked_area_trabalho.insertWidget(0, self.widget_atividades)
+
+        self.frame_conteudo = QFrame()
+        self.frame_conteudo.setFrameShape(QFrame.Box)
+        self.layout_frame_conteudo = QVBoxLayout()
+        self.frame_conteudo.setLayout(self.layout_frame_conteudo)
+        self.layout_widget_atividades.addWidget(self.frame_conteudo)
+
+        self.label_conteudo = QLabel("Viver é a coisa mais rara do mundo. A maioria das pessoas apenas existe. - Oscar Wilde")
+        self.layout_frame_conteudo.addWidget(self.label_conteudo)
+
+        self.frame_notes = QFrame()
+        self.layout_frame_notes = QVBoxLayout()
+        self.frame_notes.setLayout(self.layout_frame_notes)
+        self.layout_widget_atividades.addWidget(self.frame_notes)
+
+        self.create_notes = QTextEdit()
+        self.create_notes.setPlaceholderText("Digite aqui o que precisa")
+        self.layout_frame_notes.addWidget(self.create_notes)
+
+        self.frame_checklist = QFrame()
+        self.layout_frame_checklist = QVBoxLayout()
+        self.frame_checklist.setLayout(self.layout_frame_checklist)
+        self.layout_widget_atividades.addWidget(self.frame_checklist)
+        
+        self.frame_to_do = QFrame()
+        self.form_to_do = QFormLayout()
+        self.frame_to_do.setLayout(self.form_to_do)
+        self.layout_frame_checklist.addWidget(self.frame_to_do)
+
+        self.add_activity = QPushButton("+")
+        self.exclude_activity = QPushButton("-")
+        self.change_activity = QPushButton("Edit")
+        
+        self.layout_frame_checklist.addWidget(self.add_activity)
+        self.layout_frame_checklist.addWidget(self.exclude_activity)
+        self.layout_frame_checklist.addWidget(self.change_activity)
 
 
 
