@@ -3,7 +3,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QPushButton,
     QLineEdit, QStackedWidget, QSpacerItem,
     QSizePolicy, QWidget,QLabel,
-    QTextEdit, QFormLayout
+    QTextEdit, QFormLayout, QInputDialog, QCheckBox
 )
 
 from PySide6.QtGui import QIcon, Qt
@@ -197,6 +197,7 @@ class MainWindow(QMainWindow):
         self.layout_frame_checklist.addWidget(self.frame_botoes)
 
         self.add_activity = QPushButton()
+        self.add_activity.clicked.connect(self.open_input_dialog) #########
         self.icon_add = QIcon("images/adicionar.png")
         self.add_activity.setIcon(self.icon_add)
         self.add_activity.setStyleSheet(self.button_style)
@@ -220,6 +221,12 @@ class MainWindow(QMainWindow):
         self.layout_frame_botoes.addWidget(self.change_activity)
 
         # Construção da lógica do aplicativo
+
+    def open_input_dialog(self):
+        text, ok_pressed = QInputDialog.getText(self, "Input Dialog", "Digite algo:")
+        if ok_pressed:
+            item = QCheckBox(text)
+            self.form_to_do.addWidget(item)
 
 
 
