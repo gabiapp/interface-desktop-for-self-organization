@@ -165,14 +165,19 @@ class MainWindow(QMainWindow):
         self.label_conteudo = QLabel("Viver é a coisa mais rara do mundo. A maioria das pessoas apenas existe. - Oscar Wilde")
         self.layout_frame_conteudo.addWidget(self.label_conteudo)
 
-        self.frame_notes = QFrame()
+        self.frame_notes = QFrame() # QFrame para conter a caixa de texto para criação de registros diários
         self.layout_frame_notes = QVBoxLayout()
         self.frame_notes.setLayout(self.layout_frame_notes)
         self.layout_widget_atividades.addWidget(self.frame_notes, 1, 0, 2, 2)
 
-        self.create_notes = QTextEdit()
+        self.create_notes = QTextEdit() # Caixa para adicionar texto do dia a dia
         self.create_notes.setPlaceholderText("Digite aqui o que precisa")
         self.layout_frame_notes.addWidget(self.create_notes)
+
+        self.btn_txt = QPushButton("Salvar registro") # Botão que cria e salva o arquivo txt
+        self.btn_txt.setStyleSheet(self.button_style)
+        self.layout_frame_notes.addWidget(self.btn_txt)
+
 
         self.frame_checklist = QFrame()
         self.layout_frame_checklist = QVBoxLayout()
@@ -213,6 +218,10 @@ class MainWindow(QMainWindow):
         self.layout_frame_botoes.addWidget(self.add_activity)
         self.layout_frame_botoes.addWidget(self.exclude_activity)
         self.layout_frame_botoes.addWidget(self.change_activity)
+
+        # Construção da lógica do aplicativo
+
+
 
 
 if __name__ == "__main__":
