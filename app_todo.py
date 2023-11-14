@@ -3,10 +3,13 @@ from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QPushButton,
     QLineEdit, QStackedWidget, QSpacerItem,
     QSizePolicy, QWidget,QLabel,
-    QTextEdit, QFormLayout, QInputDialog, QCheckBox
+    QTextEdit, QFormLayout, QInputDialog, QCheckBox, QPlainTextEdit 
 )
 
 from PySide6.QtGui import QIcon, Qt
+
+import json
+import os
 
 
 class MainWindow(QMainWindow):
@@ -14,6 +17,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Interface pra Gabriela se localizar")
         self.setMouseTracking(True) 
+     
 
         # Criação das estruturas básicas
 
@@ -69,6 +73,7 @@ class MainWindow(QMainWindow):
         """
 
         self.btn_files = QPushButton()
+        self.btn_files.clicked.connect(lambda: self.stacked_area_trabalho.setCurrentIndex(1))
         self.icon_files = QIcon("images/pasta.png")
         self.btn_files.setIcon(self.icon_files)
         self.btn_files.setStyleSheet(self.button_style)
@@ -100,6 +105,7 @@ class MainWindow(QMainWindow):
         # Botões para a barra superior
 
         self.btn_Gabriela = QPushButton()
+        self.btn_Gabriela.clicked.connect(lambda: self.stacked_area_trabalho.setCurrentIndex(0))
         self.icon_gabiapp = QIcon('images/flores.png')
         self.btn_Gabriela.setIcon(self.icon_gabiapp)
         self.btn_Gabriela.setStyleSheet(self.button_style)
@@ -175,6 +181,7 @@ class MainWindow(QMainWindow):
         self.layout_frame_notes.addWidget(self.create_notes)
 
         self.btn_txt = QPushButton("Salvar registro") # Botão que cria e salva o arquivo txt
+        self.btn_txt.clicked.connect(self.save_notes)
         self.btn_txt.setStyleSheet(self.button_style)
         self.layout_frame_notes.addWidget(self.btn_txt)
 
@@ -220,13 +227,55 @@ class MainWindow(QMainWindow):
         self.layout_frame_botoes.addWidget(self.exclude_activity)
         self.layout_frame_botoes.addWidget(self.change_activity)
 
+
+        self.widget_anotations = QWidget()  # Widget onde serão exibidas as anotações que foram criadas
+        self.layout_widget_anotations = QVBoxLayout()
+        self.widget_anotations.setLayout(self.layout_widget_anotations)
+        self.stacked_area_trabalho.insertWidget(1, self.widget_anotations)
+
+
+        self.directory  = "C:/Users/gabriela/Desktop/projetos_pyside6/intrf_05/anotations"
+        self.reload_notes()
+
         # Construção da lógica do aplicativo
 
     def open_input_dialog(self):
-        text, ok_pressed = QInputDialog.getText(self, "Input Dialog", "Digite algo:")
+        text, ok_pressed = QInputDialog.getText(self, "Input Dialog", "Digite sua tarefa:")
         if ok_pressed:
             item = QCheckBox(text)
             self.form_to_do.addWidget(item)
+    
+    ## Função para excluir tarefas que não quero na minha lista, tambpem adicionar efeito que quzndo a checkbox é assinada a escrita fica vermelha.
+    ## É preciso criar uma lista para adicionar as tarefas, para que assim elas possam ser excluídas
+
+
+    def save_notes(self):
+        anotation = self.create_notes.toPlainText()
+        file_name, ok_pressed = QInputDialog.getText(self, "Salvar anotação", "Nomeie o arquivo:")
+        self.directory  = "C:/Users/gabriela/Desktop/projetos_pyside6/intrf_05/anotations"
+        file_path = os.path.join(self.directory, file_name)
+
+        if ok_pressed:
+            with open(file_path, 'w') as file:
+                file.write(anotation)
+
+        files = os.listdir(self.directory)
+
+        for file_name in files:
+            link_note = QPlainTextEdit (file_name)
+            link_note.setObjectName(file_name)
+            link_note.setStyleSheet("color: blue; text-decoration: underline; ")
+            link_note.mousePressEvent = lambda event, file=file_name: self.open_file(file)
+            self.layout_widget_anotations.addWidget(link_note)
+
+    def reload_notes(self):
+        if os.path.exists(self.directory):
+            files = os.listdir(self.directory)  # Lista de arquivos no diretório
+
+            for file_name in files:
+                link_note = QPlainTextEdit(file_name)
+                self.layout_widget_anotations.addWidget(link_note)
+                link_note.mousePressEvent = lambda event, file=file_name: self.open_file(file)
 
 
 
