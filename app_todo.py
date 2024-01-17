@@ -10,6 +10,7 @@ from PySide6.QtGui import QIcon, Qt
 
 import json
 import os
+import datetime
 
 
 class MainWindow(QMainWindow):
@@ -18,9 +19,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Interface pra Gabriela se localizar")
         self.setMouseTracking(True) 
      
-
         # Criação das estruturas básicas
-
         self.widget_principal = QFrame() # Widget principal onde todas as estruturas serão alocadas
         self.widget_principal.setStyleSheet("QFrame { border: 1px solid white; }")
         self.layout_principal = QGridLayout() # Layout do widget principal
@@ -240,12 +239,70 @@ class MainWindow(QMainWindow):
         # Construção da lógica do aplicativo
 
     def open_input_dialog(self):
-        text, ok_pressed = QInputDialog.getText(self, "Input Dialog", "Digite sua tarefa:")
-        if ok_pressed:
-            item = QCheckBox(text)
-            self.form_to_do.addWidget(item)
+            text, ok_pressed = QInputDialog.getText(self, "Input Dialog", "Digite sua tarefa:")
+
+            if ok_pressed:
+                # Criar um sufixo com base na data
+                data_atual = datetime.datetime.now()
+                sufixo_data = data_atual.strftime("%Y%m%d")
+
+                # Criar um nome único para a variável
+                nome_variavel = f"tarefa{sufixo_data}"
+
+                # Criar um novo QCheckBox
+                nova_tarefa = QCheckBox(text)
+                self.form_to_do.addWidget(nova_tarefa)
+
+                # Obter o texto da nova tarefa
+                conteudo = nova_tarefa.text()
+
+                # Ler o JSON tarefas.json
+                try:
+                    with open('tarefas.json', 'r') as arquivo:
+                        dados_json = json.load(arquivo)
+                except FileNotFoundError:
+                    dados_json = {}
+
+                # Adicionar nova tarefa aos dados
+                dados_json[nome_variavel] = {'conteudo': conteudo, 'completa': False}
+
+                # Escrever de volta ao JSON
+                with open('tarefas.json', 'w') as arquivo:
+                    json.dump(dados_json, arquivo, indent=4)
+
+    def marcar_tarefa_como_concluida(self, nome_variavel):
+        # Ler o JSON tarefas.json
+        try:
+            with open('tarefas.json', 'r') as arquivo:
+                dados_json = json.load(arquivo)
+        except FileNotFoundError:
+            dados_json = {}
+
+        # Marcar a tarefa como concluída
+        if nome_variavel in dados_json:
+            dados_json[nome_variavel]['completa'] = True
+
+            # Escrever de volta ao JSON
+            with open('tarefas.json', 'w') as arquivo:
+                json.dump(dados_json, arquivo, indent=4)
+
+    def deletar_tarefas(self, nome_variavel):
+        try:
+            with open('tarefas.json', 'r') as arquivo:
+                dados_json = json.load(arquivo)
+        except FileNotFoundError:
+            dados_json = {}
+        
+        #Deletar a tarefa
+        if nome_variavel in dados_json:
+            del dados_json[nome_variavel]
+
+        # Escrever dados modificados novamente no arquivo json
+            with open('tarefas.json', 'w') as arquivo:
+                json.dump(dados_json, arquivo, indent=4)
+            
     
-    ## Função para excluir tarefas que não quero na minha lista, tambpem adicionar efeito que quzndo a checkbox é assinada a escrita fica vermelha.
+    ## Função para excluir tarefas que não quero na minha lista, também adicionar efeito que quando a checkbox é assinada a escrita fica vermelha.
     ## É preciso criar uma lista para adicionar as tarefas, para que assim elas possam ser excluídas
 
 
